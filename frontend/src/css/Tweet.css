@@ -1,0 +1,13 @@
+.like-button {
+    transition: color 0.3s ease, transform 0.3s ease;
+  }
+  
+  .like-button.liked {
+    color: #e0245e; /* Rouge tendant vers le rose */
+    transform: scale(1.02);
+  }
+  
+  .like-button.liked svg {
+    fill: #e0245e;
+    transition: fill 0.3s ease;
+  }

@@ -1,0 +1,9 @@
+[
+    { "id": 1, "trend": "#ReactJS" },
+    { "id": 2, "trend": "#JavaScript" },
+    { "id": 3, "trend": "#WebDevelopment" },
+    { "id": 4, "trend": "#CSS" },
+    { "id": 5, "trend": "#HTML" },
+    { "id": 6, "trend": "#Frontend" },
+    { "id": 7, "trend": "#Programming" }
+  ]

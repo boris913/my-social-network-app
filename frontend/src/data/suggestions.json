@@ -1,0 +1,6 @@
+[
+    { "id": 1, "name": "John Doe", "username": "johndoe", "profileImage": "https://picsum.photos/seed/johndoe/40", "isVerified": true},
+    { "id": 2, "name": "Jane Smith", "username": "janesmith", "profileImage": "https://picsum.photos/seed/janesmith/40", "isVerified": false},
+    { "id": 3, "name": "Alice Johnson", "username": "alicejohnson", "profileImage": "https://picsum.photos/seed/alicejohnson/40", "isVerified": true},
+    { "id": 4, "name": "Bob Brown", "username": "bobbrown", "profileImage": "https://picsum.photos/seed/bobbrown/40", "isVerified": true}
+  ]

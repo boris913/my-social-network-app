@@ -1,0 +1,253 @@
+[
+  { 
+    "id": 1, 
+    "user": "Alice Tech", 
+    "username": "alicetech", 
+    "content": "La nouvelle mise à jour de React est incroyable ! Hâte de l'essayer. 🚀",
+    "profileImage": "https://picsum.photos/seed/alice/50",
+    "isVerified": "true", 
+    "retweets": 10,
+    "likes": 150,
+    "shares": 20,
+    "responses": [
+      { 
+        "id": 1, 
+        "user": "Marc Dev", 
+        "username": "marcdev", 
+        "content": "Oui, j'adore les nouvelles fonctionnalités !", 
+        "profileImage": "https://picsum.photos/seed/marc/40", 
+        "isVerified": "true",
+        "retweets": 5,
+        "likes": 30,
+        "shares": 2
+      },
+      { 
+        "id": 2, 
+        "user": "Sophie Code", 
+        "username": "sophiecode", 
+        "content": "As-tu déjà testé les nouveaux hooks ?",
+        "profileImage": "https://picsum.photos/seed/sophie/40",
+        "isVerified": "true",
+        "retweets": 3,
+        "likes": 25,
+        "shares": 1,
+        "responses": [
+          { 
+            "id": 1, 
+            "user": "Alice Tech", 
+            "username": "alicetech", 
+            "content": "Pas encore, mais ça a l'air génial !", 
+            "profileImage": "https://picsum.photos/seed/alice/40", 
+            "isVerified": "true",
+            "retweets": 4,
+            "likes": 20,
+            "shares": 1
+          },
+          { 
+            "id": 2, 
+            "user": "Marc Dev", 
+            "username": "marcdev", 
+            "content": "Ils facilitent vraiment la gestion d'état.", 
+            "profileImage": "https://picsum.photos/seed/marc/40", 
+            "isVerified": "true",
+            "retweets": 2,
+            "likes": 15,
+            "shares": 0
+          }
+        ]
+      }
+    ]
+  },
+  { 
+    "id": 2, 
+    "user": "Julien Innovations", 
+    "username": "julieninnov", 
+    "content": "Le dernier événement Apple était éblouissant ! De nouveaux produits à couper le souffle. 🍏",
+    "profileImage": "https://picsum.photos/seed/julien/50",
+    "isVerified": "true",
+    "retweets": 8,
+    "likes": 120,
+    "shares": 15,
+    "responses": [
+      { 
+        "id": 1, 
+        "user": "Lucie Tech", 
+        "username": "lucietech", 
+        "content": "J'ai hâte de voir le nouvel iPhone !", 
+        "profileImage": "https://picsum.photos/seed/lucie/40",
+        "isVerified": "true",
+        "retweets": 3,
+        "likes": 40,
+        "shares": 4
+      },
+      { 
+        "id": 2, 
+        "user": "Thomas Gadget", 
+        "username": "thomasgadget", 
+        "content": "Et le MacBook M2 ? Ça va changer la donne !",
+        "profileImage": "https://picsum.photos/seed/thomas/40",
+        "isVerified": "true",
+        "retweets": 5,
+        "likes": 35,
+        "shares": 3,
+        "responses": [
+          { 
+            "id": 1, 
+            "user": "Julien Innovations", 
+            "username": "julieninnov", 
+            "content": "Absolument, les performances sont impressionnantes !", 
+            "profileImage": "https://picsum.photos/seed/julien/40",
+            "isVerified": "true",
+            "retweets": 2,
+            "likes": 25,
+            "shares": 1
+          }
+        ]
+      }
+    ]
+  },
+  { 
+    "id": 3, 
+    "user": "Chloé Dev", 
+    "username": "chloedotdev", 
+    "content": "J’ai découvert un super projet open-source sur GitHub. Ça vaut le détour ! 🌍",
+    "profileImage": "https://picsum.photos/seed/chloe/50",
+    "isVerified": "true",
+    "retweets": 12,
+    "likes": 110,
+    "shares": 18,
+    "responses": [
+      { 
+        "id": 1, 
+        "user": "Antoine Open", 
+        "username": "antoineopen", 
+        "content": "C'est quoi le projet ?", 
+        "profileImage": "https://picsum.photos/seed/antoine/40",
+        "isVerified": "true",
+        "retweets": 4,
+        "likes": 30,
+        "shares": 3
+      },
+      { 
+        "id": 2, 
+        "user": "Marie Code", 
+        "username": "mariecode", 
+        "content": "J'aime soutenir les projets open-source !",
+        "profileImage": "https://picsum.photos/seed/marie/40",
+        "isVerified": "true",
+        "retweets": 5,
+        "likes": 45,
+        "shares": 2,
+        "responses": [
+          { 
+            "id": 1, 
+            "user": "Chloé Dev", 
+            "username": "chloedotdev", 
+            "content": "C'est un gestionnaire de tâches très complet. Je vais partager le lien !", 
+            "profileImage": "https://picsum.photos/seed/chloe/40",
+            "isVerified": "true",
+            "retweets": 3,
+            "likes": 22,
+            "shares": 1
+          }
+        ]
+      }
+    ]
+  },
+  { 
+    "id": 4, 
+    "user": "Léa Tech", 
+    "username": "leatech", 
+    "content": "Les avancées en IA cette année sont impressionnantes. Quels outils utilisez-vous ? 🤖",
+    "profileImage": "https://picsum.photos/seed/lea/50",
+    "isVerified": "true",
+    "retweets": 7,
+    "likes": 90,
+    "shares": 14,
+    "responses": [
+      { 
+        "id": 1, 
+        "user": "Paul AI", 
+        "username": "paulaitech", 
+        "content": "J'adore utiliser TensorFlow pour mes projets.", 
+        "profileImage": "https://picsum.photos/seed/paul/40",
+        "isVerified": "true",
+        "retweets": 3,
+        "likes": 25,
+        "shares": 2
+      },
+      { 
+        "id": 2, 
+        "user": "Emma Data", 
+        "username": "emmadatascience", 
+        "content": "Je suis fan de PyTorch, il est si intuitif !",
+        "profileImage": "https://picsum.photos/seed/emma/40",
+        "isVerified": "true",
+        "retweets": 4,
+        "likes": 30,
+        "shares": 1,
+        "responses": [
+          { 
+            "id": 1, 
+            "user": "Léa Tech", 
+            "username": "leatech", 
+            "content": "J'ai entendu parler de PyTorch, je devrais l'essayer.", 
+            "profileImage": "https://picsum.photos/seed/lea/40",
+            "isVerified": "true",
+            "retweets": 2,
+            "likes": 18,
+            "shares": 1
+          }
+        ]
+      }
+    ]
+  },
+  { 
+    "id": 5, 
+    "user": "François Cyber", 
+    "username": "francoiscyber", 
+    "content": "Les nouvelles tendances en cybersécurité sont cruciales cette année. Protégez vos données ! 🔒",
+    "profileImage": "https://picsum.photos/seed/francois/50",
+    "isVerified": "true",
+    "retweets": 9,
+    "likes": 130,
+    "shares": 17,
+    "responses": [
+      { 
+        "id": 1, 
+        "user": "Claire Secure", 
+        "username": "clairesecure", 
+        "content": "Absolument ! La sécurité des données doit être une priorité.", 
+        "profileImage": "https://picsum.photos/seed/claire/40",
+        "isVerified": "true",
+        "retweets": 4,
+        "likes": 35,
+        "shares": 3
+      },
+      { 
+        "id": 2, 
+        "user": "Nicolas Network", 
+        "username": "nicolasnetwork", 
+        "content": "Avez-vous des recommandations de logiciels de sécurité ?",
+        "profileImage": "https://picsum.photos/seed/nicolas/40",
+        "isVerified": "true",
+        "retweets": 5,
+        "likes": 28,
+        "shares": 2,
+        "responses": [
+          { 
+            "id": 1, 
+            "user": "François Cyber", 
+            "username": "francoiscyber", 
+            "content": "Oui, j'utilise Norton et c'est très efficace.", 
+            "profileImage": "https://picsum.photos/seed/francois/40",
+            "isVerified": "true",
+            "retweets": 3,
+            "likes": 20,
+            "shares": 1
+          }
+        ]
+      }
+    ]
+  }
+]

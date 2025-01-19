@@ -1,0 +1,50 @@
+import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { ArrowRightOnRectangleIcon } from '@heroicons/react/24/solid';
+
+function NavbarTop({ user, onLogout }) {
+  const navigate = useNavigate();
+  console.log(user);
+  const handleLogout = () => {
+    onLogout();
+    navigate('/login');
+  };
+
+  // Base URL du serveur backend
+  const BASE_URL = 'http://localhost:5000';
+
+  // Construction de l'URL complète pour la photo de profil
+  const profilePictureUrl = user.profile_picture.startsWith('/uploads/')
+    ? `${BASE_URL}${user.profile_picture}`
+    : user.profile_picture;
+
+  return (
+    <nav className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white w-full p-4 flex justify-between items-center border-b border-gray-400 dark:border-gray-1000 fixed top-0 z-50">
+      <div className="flex items-center">
+        <Link to="/profile">
+          <img
+            src={profilePictureUrl}
+            alt="Profil"
+            className="h-10 w-10 rounded-full border border-gray-300 dark:border-gray-700"
+            onError={(e) => { e.target.src = 'https://picsum.photos/seed/currentuser/40'; }} // Fallback si l'image échoue à charger
+          />
+        </Link>
+        <div className="ml-4">
+          <Link to="/profile" className="text-lg font-bold hover:underline">
+            {user.username}
+          </Link>
+          <p className="text-sm">@{user.username}</p>
+        </div>
+      </div>
+      <button
+        onClick={handleLogout}
+        className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline flex items-center"
+      >
+        <ArrowRightOnRectangleIcon className="h-5 w-5 mr-2" /> {/* Ajout de l'icône de déconnexion */}
+        Logout
+      </button>
+    </nav>
+  );
+}
+
+export default NavbarTop;

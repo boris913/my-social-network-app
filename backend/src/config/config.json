@@ -1,0 +1,9 @@
+{
+    "development": {
+      "username": "postgres",
+      "password": "dark_army23",
+      "database": "twitter_clone",
+      "host": "127.0.0.1",
+      "dialect": "postgres"
+    }
+  }
