@@ -11,3 +11,12 @@
     fill: #e0245e;
     transition: fill 0.3s ease;
   }
+  /* Tweet.css */
+.retweet-button.retweeted {
+  color: #17bf63; /* Couleur verte inspirée de Twitter */
+}
+
+/* Ajoutez ceci dans votre fichier Tweet.css */
+.share-button.shared {
+  color: #1DA1F2; /* Couleur bleue de Twitter */
+}

@@ -2,10 +2,14 @@ import React, { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { HomeIcon, UserIcon,  MoonIcon, SunIcon, MagnifyingGlassIcon, PencilSquareIcon, BellIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid';
 import ThemeContext from '../context/ThemeContext';
+import { useAuth } from '../context/AuthContext';
 
 function Navbar() {
   const { theme, toggleTheme } = useContext(ThemeContext);
+  const { user } = useAuth(); 
   const [isCollapsed, setIsCollapsed] = useState(false);
+
+  
 
   const toggleNavbar = () => {
     setIsCollapsed(!isCollapsed);
@@ -38,7 +42,7 @@ function Navbar() {
           </Link>
         </li>
         <li className="flex items-center font-bold">
-          <Link to="/profile" className="flex items-center hover:no-underline">
+          <Link to={`/profile/${user.id}`} className="flex items-center hover:no-underline">
             <UserIcon className="h-6 w-6 mr-2" />
             {!isCollapsed && 'Profile'}
           </Link>

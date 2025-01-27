@@ -18,6 +18,10 @@ module.exports = (sequelize, DataTypes) => {
         key: 'id'
       }
     },
+    platform: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
     createdAt: {
       type: DataTypes.DATE,
       defaultValue: Sequelize.NOW

@@ -1,20 +1,31 @@
 import React, { useEffect, useState } from 'react';
-import Tweet from './Tweet';
+import axios from 'axios';
+import TweetCard from '../components/TweetCard';
 
 function Feed() {
-  const [tweets, setTweets] = useState([]);
+  const [feed, setFeed] = useState([]);
 
   useEffect(() => {
-    fetch('/path/to/tweets.json') // Remplacez par le chemin correct vers votre fichier JSON
-      .then(response => response.json())
-      .then(data => setTweets(data))
-      .catch(error => console.error('Error fetching tweets:', error));
+    const fetchFeed = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/tweets/feed', {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+        setFeed(response.data);
+      } catch (error) {
+        console.error('Erreur lors de la récupération du fil d\'actualités:', error);
+      }
+    };
+
+    fetchFeed();
   }, []);
 
   return (
-    <div className="feed">
-      {tweets.map(tweet => (
-        <Tweet key={tweet.id} tweet={tweet} />
+    <div>
+      {feed.map(tweet => (
+        <TweetCard key={tweet.id} tweet={tweet} />
       ))}
     </div>
   );

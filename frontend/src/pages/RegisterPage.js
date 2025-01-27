@@ -32,28 +32,29 @@ function RegisterPage() {
     if (profilePicture) {
       formData.append('profile_picture', profilePicture);
     }
-
+  
     try {
       const response = await api.post('/auth/register', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
-
+  
       console.log('Response:', response);
-
-      if (response.data && response.data.id) {
-        console.log('User created:', response.data);
-      
+  
+      // Vérifier la structure correcte de la réponse
+      if (response.data && response.data.user && response.data.user.id) {
+        console.log('User created:', response.data.user);
+  
         // Affichage du succès
         toast.success('Registration successful!', {
           position: 'top-right',
           autoClose: 3000,
         });
-      
+  
         // Stockez les informations utilisateur
-        localStorage.setItem('user', JSON.stringify(response.data));
-      
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+  
         // Redirection vers la page d'accueil après 3 secondes
         setTimeout(() => {
           navigate('/');

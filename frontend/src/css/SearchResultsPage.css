@@ -1,0 +1,10 @@
+.search-results {
+    padding: 20px;
+  }
+  
+  .no-results {
+    text-align: center;
+    font-size: 18px;
+    color: #888;
+    margin-top: 20px;
+  }

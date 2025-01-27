@@ -23,6 +23,7 @@ function LoginPage() {
           position: 'top-right',
           autoClose: 3000,
         });
+        // console.log(response.data)
 
         // Stockez le token JWT et les informations utilisateur
         localStorage.setItem('token', response.data.token);

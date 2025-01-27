@@ -1,25 +1,46 @@
 import React, { useState } from 'react';
 import { PhotoIcon, FaceSmileIcon, CalendarIcon, MapPinIcon, ClockIcon } from '@heroicons/react/24/outline';
+import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom';
 
 function NewTweet({ addNewTweet }) {
   const [content, setContent] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
-  const handleTweet = () => {
-    const newTweet = {
-      id: Date.now(),
-      user: 'Utilisateur actuel',
-      username: 'currentuser',
-      content: content,
-      profileImage: 'https://picsum.photos/seed/currentuser/50',
-      isVerified: false,
-      responses: [],
-    };
+  const handleTweet = async () => {
+    try {
+      const response = await axios.post('http://localhost:5000/api/tweets', {
+        content: content,
+      }, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
 
-    addNewTweet(newTweet);
-    setContent('');
-    setSubmitted(true);
-    setTimeout(() => setSubmitted(false), 2000);
+      addNewTweet(response.data);
+
+      setContent('');
+      setSubmitted(true);
+      setError(null);
+
+      // Afficher le toast de succès
+      toast.success("Tweet publié avec succès !");
+
+      // Attendre 3 secondes avant de rediriger vers la HomePage
+      setTimeout(() => {
+        navigate('/');
+      }, 1000);
+    } catch (error) {
+      console.error('Erreur lors de la publication du tweet:', error);
+      setError('Erreur lors de la publication du tweet. Veuillez réessayer.');
+
+      // Afficher le toast d'erreur
+      toast.error('Erreur lors de la publication du tweet. Veuillez réessayer.');
+    }
   };
 
   return (
@@ -27,7 +48,7 @@ function NewTweet({ addNewTweet }) {
       <textarea
         value={content}
         onChange={(e) => setContent(e.target.value)}
-        placeholder="What's happening?"
+        placeholder="Qu'est-ce qui se passe ?"
         className="w-full p-2 rounded-lg bg-gray-200 dark:bg-gray-700 dark:text-white focus:outline-none"
       />
       <div className="flex items-center justify-between mt-2">
@@ -53,14 +74,20 @@ function NewTweet({ addNewTweet }) {
           className={`bg-blue-500 text-white py-2 px-4 rounded-full ${content ? '' : 'opacity-50 cursor-not-allowed'}`}
           disabled={!content}
         >
-          Tweet
+          Tweeter
         </button>
       </div>
       {submitted && (
         <div className="mt-2 text-green-500">
-          Tweet submitted!
+          publié !
         </div>
       )}
+      {error && (
+        <div className="mt-2 text-red-500">
+          {error}
+        </div>
+      )}
+      <ToastContainer />
     </div>
   );
 }

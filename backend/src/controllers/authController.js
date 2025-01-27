@@ -57,7 +57,7 @@ exports.login = async (req, res) => {
     if (!isMatch) {
       return res.status(400).json({ error: 'Invalid credentials' });
     }
-    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '7d' });
     res.status(200).json({ token, user }); // Inclure les infos utilisateur
   } catch (error) {
     console.error('Erreur lors de la connexion de l\'utilisateur:', error);

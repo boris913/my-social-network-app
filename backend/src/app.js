@@ -1,23 +1,26 @@
 const express = require('express');
-const mongoose = require('mongoose');
-const dotenv = require('dotenv');
-
-dotenv.config();
-
 const app = express();
 
-// Middleware
+// Importer les routes
+const tweetRoutes = require('./routes/tweet');
+const commentRoutes = require('./routes/comment');
+const likeRoutes = require('./routes/like');
+const retweetRoutes = require('./routes/retweet');
+const shareRoutes = require('./routes/share');
+const notificationRoutes = require('./routes/notification');
+const privateMessageRoutes = require('./routes/privateMessage');
+const followRoutes = require('./routes/follow');
+
 app.use(express.json());
 
-// Routes
-const userRoutes = require('./routes/userRoutes');
-app.use('/api/users', userRoutes);
-
-// DB Connection
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-}).then(() => console.log('MongoDB connected'))
-  .catch(err => console.log(err));
+// Utiliser les routes
+app.use('/tweets', tweetRoutes);
+app.use('/comments', commentRoutes);
+app.use('/likes', likeRoutes);
+app.use('/retweets', retweetRoutes);
+app.use('/shares', shareRoutes);
+app.use('/notifications', notificationRoutes);
+app.use('/messages', privateMessageRoutes);
+app.use('/follows', followRoutes);
 
 module.exports = app;

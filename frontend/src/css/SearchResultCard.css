@@ -1,0 +1,36 @@
+.search-result-card {
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+    background-color: white;
+    color: black;
+    transition: background-color 0.3s;
+  }
+  
+  .search-result-card:hover {
+    background-color: #f0f0f0;
+  }
+  
+  .search-result-card img {
+    border-radius: 50%;
+  }
+  
+  .search-result-card .text-lg {
+    font-size: 1.125rem;
+  }
+  
+  .search-result-card .text-sm {
+    font-size: 0.875rem;
+  }
+  
+  /* Styles pour le mode sombre */
+  @media (prefers-color-scheme: dark) {
+    .search-result-card {
+      background-color: #333;
+      color: white;
+      border-bottom: 1px solid #555;
+    }
+  
+    .search-result-card:hover {
+      background-color: #444;
+    }
+  }
