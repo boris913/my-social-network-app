@@ -3,14 +3,11 @@ import NewTweet from '../components/NewTweet';
 import TweetCard from '../components/TweetCard';
 import Trends from '../components/Trends';
 import Suggestions from '../components/Suggestions';
-import SearchBar from '../components/SearchBar';
 import SearchResultsPage from './SearchResultsPage';
 import axios from 'axios';
 
-function HomePage() {
+function HomePage({ user, logout, searchType, searchQuery }) { // Recevoir user, logout, searchType et searchQuery en tant que props
   const [tweets, setTweets] = useState([]);
-  const [searchType, setSearchType] = useState(null);
-  const [searchQuery, setSearchQuery] = useState('');
 
   const fetchTweets = async () => {
     try {
@@ -55,15 +52,9 @@ function HomePage() {
     setTweets(updatedTweets);
   };
 
-  const handleSearch = (type, query) => {
-    setSearchType(type);
-    setSearchQuery(query);
-  };
-
   return (
     <div className="flex h-full w-full space-x-4 bg-gray-100 dark:bg-gray-900 border-b border-gray-400 dark:border-gray-1000" style={{ paddingTop: '27px' }}>
       <div className="flex-1">
-        <SearchBar onSearch={handleSearch} />
         {searchQuery ? (
           <SearchResultsPage type={searchType} query={searchQuery} />
         ) : (

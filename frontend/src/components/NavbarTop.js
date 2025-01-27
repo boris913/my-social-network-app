@@ -25,6 +25,11 @@ function NavbarTop({ user, onLogout, onSearch }) { // Ajouter onSearch comme pro
     ? `${BASE_URL}${user.profile_picture}`
     : user.profile_picture || 'https://picsum.photos/seed/default/40';
 
+  const handleSearch = (type, query) => {
+    onSearch(type, query);
+    navigate(`/search?type=${type}&query=${query}`);
+  };
+
   return (
     <nav className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white w-full p-4 flex justify-between items-center border-b border-gray-400 dark:border-gray-1000 fixed top-0 z-50">
       <div className="flex items-center">
@@ -45,7 +50,7 @@ function NavbarTop({ user, onLogout, onSearch }) { // Ajouter onSearch comme pro
         </div>
       </div>
       <div className="flex-grow mx-4 flex justify-end">
-        <SearchBar onSearch={onSearch} /> {/* Passer la fonction onSearch à SearchBar */}
+        <SearchBar onSearch={handleSearch} /> {/* Passer la fonction handleSearch à SearchBar */}
       </div>
       <button
         onClick={handleLogout}

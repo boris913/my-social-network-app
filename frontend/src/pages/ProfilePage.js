@@ -127,7 +127,7 @@ function ProfilePage() {
         />
         <div className="ml-4">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{user.username}
-          {user.isVerified && <VerifiedBadge />}</h2>
+          { <VerifiedBadge />}</h2>
           <p className="text-gray-500 dark:text-gray-400">@{user.username}</p>
           <p className="text-gray-700 dark:text-gray-300 mt-2">{user.bio}</p>
         </div>
