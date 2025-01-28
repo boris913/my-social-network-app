@@ -12,7 +12,9 @@ function TweetDetail() {
   const [tweet, setTweet] = useState(null);
   const [comments, setComments] = useState([]);
   const [content, setContent] = useState('');
+  const [replyContent, setReplyContent] = useState('');
   const [showCommentInput, setShowCommentInput] = useState(false);
+  const [showReplyInput, setShowReplyInput] = useState(null);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [retweets, setRetweets] = useState(0);
   const [likes, setLikes] = useState(0);
@@ -108,6 +110,48 @@ function TweetDetail() {
         setTimeout(() => setShowConfirmation(false), 2000);
       } catch (error) {
         console.error('Erreur lors de l\'ajout du commentaire:', error);
+      }
+    }
+  };
+
+  const handleReplyToComment = async (parentCommentId) => {
+    if (replyContent.trim()) {
+      try {
+        const response = await axios.post(`${BASE_URL}/api/comments/reply`, {
+          content: replyContent,
+          parentCommentId: parentCommentId
+        }, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+
+        const addReplyToComment = (comments, parentCommentId, reply) => {
+          return comments.map(comment => {
+            if (comment.id === parentCommentId) {
+              return {
+                ...comment,
+                replies: [...(comment.replies || []), reply]
+              };
+            } else if (comment.replies) {
+              return {
+                ...comment,
+                replies: addReplyToComment(comment.replies, parentCommentId, reply)
+              };
+            }
+            return comment;
+          });
+        };
+
+        const updatedComments = addReplyToComment(comments, parentCommentId, response.data);
+
+        setComments(updatedComments);
+        setReplyContent('');
+        setShowReplyInput(null);
+        setShowConfirmation(true);
+        setTimeout(() => setShowConfirmation(false), 2000);
+      } catch (error) {
+        console.error('Erreur lors de la réponse au commentaire:', error);
       }
     }
   };
@@ -221,6 +265,20 @@ function TweetDetail() {
     }
   };
 
+  // Fonction pour liker un commentaire
+  const handleLikeComment = async (commentId) => {
+    try {
+      await axios.post(`${BASE_URL}/api/likes/comment/${commentId}`, {}, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+      fetchComments(tweetId); // Rafraîchir la liste des commentaires
+    } catch (error) {
+      console.error('Erreur lors du like du commentaire:', error);
+    }
+  };
+
   if (!tweet) {
     return <div>Loading...</div>;
   }
@@ -229,6 +287,53 @@ function TweetDetail() {
   const profilePictureUrl = tweet.User.profile_picture.startsWith('/uploads/')
     ? `${BASE_URL}${tweet.User.profile_picture}`
     : tweet.User.profile_picture;
+
+  const renderComments = (comments, level = 0) => {
+    return comments.map(comment => (
+      <div key={comment.id} className={`mt-2 ml-${level * 5}`}>
+        <div className="flex items-center space-x-4">
+          <img
+            src={comment.User.profile_picture.startsWith('/uploads/')
+              ? `${BASE_URL}${comment.User.profile_picture}`
+              : comment.User.profile_picture}
+            alt="Profile"
+            className="h-10 w-10 rounded-full"
+          />
+          <div className="bg-gray-100 dark:bg-gray-700 p-2 rounded-lg w-full border border-gray-400 dark:border-gray-1000">
+            <div className="text-gray-900 dark:text-white font-bold">
+              {comment.User.username}
+              <VerifiedBadge />
+            </div>
+            <div className="text-gray-500 dark:text-gray-300">@{comment.User.username}</div>
+            {level > 0 && (
+              <div className="text-gray-500 dark:text-gray-400 text-sm mt-1 mb-3">
+                En réponse à <span className="text-blue-500">@{tweet.User?.username}</span>
+              </div>
+            )}
+            <p className="text-gray-700 dark:text-gray-300">{comment.content}</p>
+            <div className="flex justify-between items-center mt-4">
+              <TweetButton Icon={HeartIcon} label="Like" onClick={() => handleLikeComment(comment.id)} count={comment.likes} className={`like-button ${comment.isLiked ? 'liked' : ''}`} />
+              <TweetButton Icon={ChatBubbleOvalLeftIcon} label="Reply" onClick={() => setShowReplyInput(comment.id)} />
+            </div>
+            {showReplyInput === comment.id && (
+              <div className="reply-input mt-2">
+                <textarea
+                  value={replyContent}
+                  onChange={(e) => setReplyContent(e.target.value)}
+                  placeholder="Écrire une réponse..."
+                  className="w-full p-2 rounded-lg bg-gray-200 dark:bg-gray-700 dark:text-white focus:outline-none"
+                />
+                <button onClick={() => handleReplyToComment(comment.id)} className="mt-2 p-2 bg-blue-500 text-white rounded-lg">
+                  Répondre
+                </button>
+              </div>
+            )}
+            {comment.replies && comment.replies.length > 0 && renderComments(comment.replies, level + 1)}
+          </div>
+        </div>
+      </div>
+    ));
+  };
 
   return (
     <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow mb-4 border border-gray-400 dark:border-gray-700">
@@ -257,26 +362,7 @@ function TweetDetail() {
       </div>
       <div className="mt-4">
         <h3 className="text-lg font-bold text-gray-900 dark:text-white">Réponses ({comments.length})</h3>
-        {comments.map(comment => (
-          <div key={comment.id} className="mt-2 ml-5">
-            <div className="flex items-center space-x-4">
-              <img src={comment.User.profile_picture.startsWith('/uploads/')
-                ? `${BASE_URL}${comment.User.profile_picture}`
-                : comment.User.profile_picture} 
-                alt="Profile" 
-                className="h-10 w-10 rounded-full" 
-              />
-              <div className="bg-gray-100 dark:bg-gray-700 p-2 rounded-lg w-full border border-gray-400 dark:border-gray-1000">
-                <div className="text-gray-900 dark:text-white font-bold">
-                  {comment.User.username}
-                  <VerifiedBadge />
-                </div>
-                <div className="text-gray-500 dark:text-gray-300">@{comment.User.username}</div>
-                <p className="text-gray-700 dark:text-gray-300">{comment.content}</p>
-              </div>
-            </div>
-          </div>
-        ))}
+        {renderComments(comments)}
         <Modal isOpen={showCommentInput} onClose={() => setShowCommentInput(false)}>
           <textarea
             value={content}

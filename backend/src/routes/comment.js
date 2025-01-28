@@ -9,4 +9,6 @@ router.get('/:tweetId', commentController.getCommentsByTweet);
 router.put('/:id', authenticate, commentController.updateComment);
 router.delete('/:id', authenticate, commentController.deleteComment);
 
+router.post('/reply', authenticate, commentController.replyToComment);
+
 module.exports = router;

@@ -1,4 +1,5 @@
-const { Like, Tweet, User } = require('../models');
+const { Like, Tweet, User, Comment, Sequelize } = require('../models'); //
+const Op = Sequelize.Op; 
 
 const likeController = {
   createLike: async (req, res) => {
@@ -93,7 +94,81 @@ getLikedTweetsByUser: async (req, res) => {
     console.error('Erreur lors de la récupération des tweets likés:', error);
     res.status(500).json({ message: 'Erreur lors de la récupération des tweets likés' });
   }
-}
+},
+
+//-----------------------------------------------Gestions des Likes pour les commentaires------------------------------------------------ 
+
+createLikeForComment: async (req, res) => {
+  try {
+    const { commentId } = req.body;
+    const userId = req.user.id;
+
+    // Vérifier si l'utilisateur a déjà liké le commentaire
+    const existingLike = await Like.findOne({
+      where: { userId: userId, commentId: commentId }
+    });
+
+    if (existingLike) {
+      return res.status(400).json({ message: 'Vous avez déjà liké ce commentaire' });
+    }
+
+    const like = await Like.create({
+      userId: userId,
+      commentId: commentId
+    });
+
+    // Optionnellement, inclure les informations de l'utilisateur et du commentaire dans la réponse
+    await like.reload({
+      include: [
+        { model: User, attributes: ['id', 'username', 'profile_picture'] },
+        { model: Comment, attributes: ['id', 'content'] }
+      ]
+    });
+
+    res.status(201).json(like);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+},
+
+deleteLikeForComment: async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user.id;
+
+    const like = await Like.findOne({
+      where: { id, userId: userId, commentId: { [Op.ne]: null } }
+    });
+
+    if (!like) {
+      return res.status(404).json({ message: 'Like non trouvé' });
+    }
+
+    await like.destroy();
+
+    res.status(204).json();
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+},
+
+getLikesByComment: async (req, res) => {
+  try {
+    const { commentId } = req.params;
+    const likes = await Like.findAll({
+      where: { commentId: commentId },
+      include: [
+        { model: User, attributes: ['id', 'username', 'profile_picture'] }
+      ]
+    });
+
+    res.status(200).json(likes);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+},
+
+
 };
 
 module.exports = likeController;

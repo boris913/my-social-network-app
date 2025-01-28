@@ -10,4 +10,9 @@ router.get('/tweet/:tweetId', likeController.getLikesByTweet);
 // Nouvelle route pour récupérer les tweets likés par un utilisateur
 router.get('/user/:userId', authenticate, likeController.getLikedTweetsByUser);
 
+router.post('/comment', authenticate, likeController.createLikeForComment);
+router.delete('/comment/:id', authenticate, likeController.deleteLikeForComment);
+router.get('/comment/:commentId', likeController.getLikesByComment);
+
+
 module.exports = router;

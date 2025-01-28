@@ -4,7 +4,7 @@ const commentController = {
   createComment: async (req, res) => {
     try {
       const { content, tweetId } = req.body;
-      const userId = req.user.id; // Assuming you have middleware to extract the user ID from the request
+      const userId = req.user.id;
 
       const comment = await Comment.create({
         userId: userId,
@@ -12,7 +12,6 @@ const commentController = {
         content
       });
 
-      // Optionally, you can include the user information in the response
       await comment.reload({
         include: [
           { model: User, attributes: ['id', 'username', 'profile_picture'] },
@@ -29,20 +28,43 @@ const commentController = {
   getCommentsByTweet: async (req, res) => {
     try {
       const { tweetId } = req.params;
-      console.log('Fetching comments for tweetId:', tweetId); // Log tweetId
       const comments = await Comment.findAll({
-        where: { tweetId: tweetId },
+        where: { tweetId: tweetId, parentCommentId: null },
         include: [
-          { model: User, attributes: ['id', 'username', 'profile_picture'] }
+          { model: User, attributes: ['id', 'username', 'profile_picture'] },
+          {
+            model: Comment,
+            as: 'Replies',
+            include: [
+              { model: User, attributes: ['id', 'username', 'profile_picture'] },
+              {
+                model: Comment,
+                as: 'Replies',
+                include: [
+                  { model: User, attributes: ['id', 'username', 'profile_picture'] },
+                  {
+                    model: Comment,
+                    as: 'Replies',
+                    include: [{ model: User, attributes: ['id', 'username', 'profile_picture'] }]
+                  }
+                ]
+              }
+            ]
+          }
         ]
       });
-      console.log('Comments retrieved:', comments); // Log comments
-      res.status(200).json(comments);
+
+      const commentsWithReplies = comments.map(comment => ({
+        ...comment.toJSON(),
+        replies: comment.Replies ? comment.Replies.map(reply => reply.toJSON()) : []
+      }));
+
+      res.status(200).json(commentsWithReplies);
     } catch (err) {
-      console.error('Error fetching comments:', err); // Log error
       res.status(500).json({ message: err.message });
     }
   },
+
 
   updateComment: async (req, res) => {
     try {
@@ -86,7 +108,43 @@ const commentController = {
     } catch (err) {
       res.status(400).json({ message: err.message });
     }
+  },
+
+  replyToComment: async (req, res) => {
+    try {
+      const { content, parentCommentId } = req.body;
+      const userId = req.user.id;
+
+      const parentComment = await Comment.findByPk(parentCommentId);
+      if (!parentComment) {
+        return res.status(404).json({ message: 'Parent comment not found' });
+      }
+
+      const reply = await Comment.create({
+        userId: userId,
+        tweetId: parentComment.tweetId,
+        parentCommentId: parentCommentId,
+        content
+      });
+
+      await reply.reload({
+        include: [
+          { model: User, attributes: ['id', 'username', 'profile_picture'] },
+          { model: Comment, as: 'ParentComment', include: [{ model: User, attributes: ['id', 'username', 'profile_picture'] }] }
+        ]
+      });
+
+      res.status(201).json(reply);
+    } catch (err) {
+      res.status(400).json({ message: err.message });
+    }
   }
+
 };
 
 module.exports = commentController;
+
+
+
+
+
