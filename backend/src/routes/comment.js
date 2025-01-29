@@ -10,5 +10,6 @@ router.put('/:id', authenticate, commentController.updateComment);
 router.delete('/:id', authenticate, commentController.deleteComment);
 
 router.post('/reply', authenticate, commentController.replyToComment);
+router.get('/replies/:commentId', commentController.getRepliesByComment);
 
 module.exports = router;
