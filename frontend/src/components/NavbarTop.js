@@ -3,9 +3,11 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ArrowRightOnRectangleIcon } from '@heroicons/react/24/solid';
 import VerifiedBadge from './VerifiedBadge';
 import SearchBar from './SearchBar'; // Importer le composant SearchBar
+import { useAuth } from '../context/AuthContext';
 
 function NavbarTop({ user, onLogout, onSearch }) { // Ajouter onSearch comme prop
   const navigate = useNavigate();
+  const { user: currentUser } = useAuth();
   
   const handleLogout = () => {
     onLogout();
@@ -33,7 +35,7 @@ function NavbarTop({ user, onLogout, onSearch }) { // Ajouter onSearch comme pro
   return (
     <nav className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white w-full p-4 flex justify-between items-center border-b border-gray-400 dark:border-gray-1000 fixed top-0 z-50">
       <div className="flex items-center">
-        <Link to="/profile">
+        <Link to={`/profile/${currentUser.id}`}>
           <img
             src={profilePictureUrl}
             alt="Profil"
@@ -42,11 +44,14 @@ function NavbarTop({ user, onLogout, onSearch }) { // Ajouter onSearch comme pro
           />
         </Link>
         <div className="ml-4">
-          <Link to="/profile" className="text-lg font-bold hover:underline">
+        <Link to={`/profile/${currentUser.id}`} className="text-lg font-bold">
             {user.username}
           </Link>
           <VerifiedBadge />
+          <Link to={`/profile/${currentUser.id}`}>
           <p className="text-sm">@{user.username}</p>
+          </Link>
+          
         </div>
       </div>
       <div className="flex-grow mx-4 flex justify-end">

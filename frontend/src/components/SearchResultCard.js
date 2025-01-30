@@ -26,6 +26,7 @@ function SearchResultCard({ result, type }) {
           <p className="text-lg font-bold flex items-center">
             {result.username}
             {result.isVerified && <VerifiedBadge />} {/* Ajouter le badge vérifié */}
+            {<VerifiedBadge />} {/* Ajouter le badge vérifié */}
           </p>
           <p className="text-sm text-gray-500">@{result.username}</p>
         </div>

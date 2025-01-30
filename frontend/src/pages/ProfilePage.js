@@ -5,6 +5,8 @@ import { useAuth } from '../context/AuthContext'; // Importer le contexte
 import VerifiedBadge from '../components/VerifiedBadge';
 import axios from 'axios';
 import TweetCard from '../components/TweetCard'; // Importer TweetCard
+import FollowersList from '../components/FollowersList'; // Importer FollowersList
+import FollowingList from '../components/FollowingList'; // Importer FollowingList
 
 function ProfilePage() {
   const { user: currentUser } = useAuth(); // Récupérer les informations de l'utilisateur connecté
@@ -17,8 +19,7 @@ function ProfilePage() {
   const [activeTab, setActiveTab] = useState('posts'); // État pour l'onglet actif
   const [follows, setFollows] = useState([]); // Ajouter un état pour les abonnements
   const [followers, setFollowers] = useState([]); // Ajouter un état pour les abonnés
-// console.log("current user:", currentUser);
-// console.log("profile_user:",user);
+
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
@@ -161,10 +162,6 @@ function ProfilePage() {
       console.error('Erreur lors du suivi de l\'utilisateur:', error);
     }
   };
-  console.log(currentUser)
-  console.log(user)
-  console.log("following" ,follows)
-  console.log("followers", followers)
 
   const handleUnfollow = async () => {
     try {
@@ -181,7 +178,8 @@ function ProfilePage() {
       console.error('Erreur lors du désabonnement de l\'utilisateur:', error);
     }
   };
-
+console.log("Followers" ,followers)
+console.log("Follows" ,follows)
   const handleUpdateTweet = (updatedTweet) => {
     setTweets((prevTweets) =>
       prevTweets.map((tweet) => (tweet.id === updatedTweet.id ? updatedTweet : tweet))
@@ -259,9 +257,11 @@ function ProfilePage() {
       
       <div className="flex justify-center space-x-4 mb-4 border-b-2 border-gray-300 dark:border-gray-700">
         <div className={tabClass('posts')} onClick={() => setActiveTab('posts')}>Posts</div>
-        <div className={tabClass('replies')} onClick={() => setActiveTab('replies')}>Replies</div>
+        {/* <div className={tabClass('replies')} onClick={() => setActiveTab('replies')}>Replies</div> */}
         <div className={tabClass('media')} onClick={() => setActiveTab('media')}>Media</div>
         <div className={tabClass('likes')} onClick={() => setActiveTab('likes')}>Likes</div>
+        <div className={tabClass('followers')} onClick={() => setActiveTab('followers')}>Followers</div>
+        <div className={tabClass('following')} onClick={() => setActiveTab('following')}>Following</div>
       </div>
 
       <div className="space-y-8">
@@ -351,6 +351,18 @@ function ProfilePage() {
             ) : (
               <p className="text-gray-500 dark:text-gray-400">No likes yet.</p>
             )}
+          </>
+        )}
+        {activeTab === 'followers' && (
+          <>
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mt-4">Followers</h3>
+            <FollowersList followers={followers} />
+          </>
+        )}
+        {activeTab === 'following' && (
+          <>
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mt-4">Following</h3>
+            <FollowingList follows={follows} />
           </>
         )}
       </div>
