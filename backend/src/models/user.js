@@ -43,8 +43,8 @@ module.exports = (sequelize, DataTypes) => {
     User.hasMany(models.PrivateMessage, { foreignKey: 'senderId', as: 'SentMessages' });
     User.hasMany(models.PrivateMessage, { foreignKey: 'receiverId', as: 'ReceivedMessages' });
     User.hasMany(models.Notification, { foreignKey: 'userId' });
-    User.belongsToMany(User, { through: 'Follows', as: 'Followers', foreignKey: 'followingId' });
-    User.belongsToMany(User, { through: 'Follows', as: 'Following', foreignKey: 'followerId' });
+    User.belongsToMany(User, { through: 'Follow', as: 'Followers', foreignKey: 'followingId' });
+    User.belongsToMany(User, { through: 'Follow', as: 'Following', foreignKey: 'followerId' });
   };
 
   return User;

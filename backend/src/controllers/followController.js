@@ -3,12 +3,12 @@ const { Follow, User } = require('../models');
 const followController = {
   createFollow: async (req, res) => {
     try {
-      const { followedId } = req.body;
+      const { followingId } = req.body;
       const followerId = req.user.id; // Assuming you have middleware to extract the user ID from the request
 
       // Check if the user is already following the target user
       const existingFollow = await Follow.findOne({
-        where: { follower_id: followerId, followed_id: followedId }
+        where: { followerId: followerId, followingId: followingId }
       });
 
       if (existingFollow) {
@@ -16,15 +16,15 @@ const followController = {
       }
 
       const follow = await Follow.create({
-        follower_id: followerId,
-        followed_id: followedId
+        followerId: followerId,
+        followingId: followingId
       });
 
       // Optionally, you can include the follower and followed user information in the response
       await follow.reload({
         include: [
           { model: User, as: 'follower', attributes: ['id', 'username', 'profile_picture'] },
-          { model: User, as: 'followed', attributes: ['id', 'username', 'profile_picture'] }
+          { model: User, as: 'following', attributes: ['id', 'username', 'profile_picture'] }
         ]
       });
 
@@ -40,7 +40,7 @@ const followController = {
       const followerId = req.user.id;
 
       const follow = await Follow.findOne({
-        where: { id, follower_id: followerId }
+        where: { id, followerId: followerId }
       });
 
       if (!follow) {
@@ -57,11 +57,11 @@ const followController = {
 
   getFollows: async (req, res) => {
     try {
-      const userId = req.user.id;
+      const { userId } = req.params;
       const follows = await Follow.findAll({
-        where: { follower_id: userId },
+        where: { followerId: userId },
         include: [
-          { model: User, as: 'followed', attributes: ['id', 'username', 'profile_picture'] }
+          { model: User, as: 'following', attributes: ['id', 'username', 'profile_picture'] }
         ]
       });
 
@@ -73,9 +73,9 @@ const followController = {
 
   getFollowers: async (req, res) => {
     try {
-      const userId = req.user.id;
+      const { userId } = req.params;
       const followers = await Follow.findAll({
-        where: { followed_id: userId },
+        where: { followingId: userId },
         include: [
           { model: User, as: 'follower', attributes: ['id', 'username', 'profile_picture'] }
         ]

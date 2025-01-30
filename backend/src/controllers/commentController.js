@@ -86,6 +86,26 @@ const commentController = {
     }
   },
 
+  getCommentsByUser: async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const comments = await Comment.findAll({
+        where: { userId: userId },
+        include: [
+          { model: User, attributes: ['id', 'username', 'profile_picture'] },
+          { model: Tweet, attributes: ['id', 'content'] },
+          { model: Comment, as: 'ParentComment', include: [{ model: User, attributes: ['id', 'username'] }] }
+        ]
+      });
+
+      res.status(200).json(comments);
+    } catch (err) {
+      console.error('Error fetching comments by user:', err);
+      res.status(500).json({ message: err.message });
+    }
+  },
+
+
 
 
 

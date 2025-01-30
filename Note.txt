@@ -404,11 +404,11 @@ CREATE TABLE Shares (
 
 CREATE TABLE Follows (
     id SERIAL PRIMARY KEY,
-    follower_id INT NOT NULL,
-    following_id INT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (follower_id) REFERENCES Users(id),
-    FOREIGN KEY (following_id) REFERENCES Users(id)
+    followerId INT NOT NULL,
+    followingId INT NOT NULL,
+    createAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (followerId) REFERENCES Users(id),
+    FOREIGN KEY (followingId) REFERENCES Users(id)
 );
 
 CREATE TABLE PrivateMessages (

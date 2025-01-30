@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import TweetButton from '../components/TweetButton';
 import VerifiedBadge from '../components/VerifiedBadge';
@@ -416,18 +416,20 @@ function TweetDetail() {
           />
           <div className="bg-gray-100 dark:bg-gray-700 p-2 rounded-lg w-full border border-gray-400 dark:border-gray-1000">
             <div className="text-gray-900 dark:text-white font-bold">
-              {comment.User.username}
+              <Link to={`/profile/${comment.User.id}`}>{comment.User.username}</Link>
               <VerifiedBadge />
             </div>
-            <div className="text-gray-500 dark:text-gray-300">@{comment.User.username}</div>
+            <div className="text-gray-500 dark:text-gray-300">
+              <Link to={`/profile/${comment.User.id}`}>@{comment.User.username}</Link>
+            </div>
             {comment.parentCommentId === null ? (
               <div className="text-gray-500 dark:text-gray-400 text-sm mt-1 mb-3">
-                En réponse à <span className="text-blue-500">@{tweet.User?.username}</span>
+                En réponse à <Link to={`/profile/${tweet.User?.id}`} className="text-blue-500">@{tweet.User?.username}</Link>
               </div>
             ) : (
               comment.ParentComment && comment.ParentComment.User && (
                 <div className="text-gray-500 dark:text-gray-400 text-sm mt-1 mb-3">
-                  En réponse à <span className="text-blue-500">@{comment.ParentComment.User.username}</span>
+                  En réponse à <Link to={`/profile/${comment.ParentComment.User.id}`} className="text-blue-500">@{comment.ParentComment.User.username}</Link>
                 </div>
               )
             )}
@@ -466,7 +468,7 @@ function TweetDetail() {
                 ) : (
                   <ChevronDownIcon className="h-5 w-5 mr-1 text-blue-500" style={{ strokeWidth: 4 }}/>
                 )}
-              </button>
+                </button>
             </div>
             {showReplyInput === comment.id && (
               <div className="reply-input mt-2">
@@ -494,10 +496,12 @@ function TweetDetail() {
         <img src={profilePictureUrl} alt="Profile" className="h-12 w-12 rounded-full" />
         <div>
           <div className="text-gray-900 dark:text-white font-bold">
-            {tweet.User.username}
+            <Link to={`/profile/${tweet.User.id}`}>{tweet.User.username}</Link>
             <VerifiedBadge />
           </div>
-          <div className="text-gray-500 dark:text-gray-400">@{tweet.User.username}</div>
+          <div className="text-gray-500 dark:text-gray-300">
+            <Link to={`/profile/${tweet.User.id}`}>@{tweet.User.username}</Link>
+          </div>
         </div>
       </div>
       <p className="text-gray-700 dark:text-gray-300 mt-2">{tweet.content}</p>

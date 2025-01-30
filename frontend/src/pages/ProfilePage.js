@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { EnvelopeIcon } from '@heroicons/react/24/solid';
 import { useAuth } from '../context/AuthContext'; // Importer le contexte
 import VerifiedBadge from '../components/VerifiedBadge';
@@ -12,9 +12,13 @@ function ProfilePage() {
   const [user, setUser] = useState(null);
   const [tweets, setTweets] = useState([]);
   const [likedTweets, setLikedTweets] = useState([]); // Ajouter un état pour les tweets likés
+  const [comments, setComments] = useState([]); // Ajouter un état pour les commentaires
   const [loading, setLoading] = useState(true); // Ajouter un état de chargement
   const [activeTab, setActiveTab] = useState('posts'); // État pour l'onglet actif
-
+  const [follows, setFollows] = useState([]); // Ajouter un état pour les abonnements
+  const [followers, setFollowers] = useState([]); // Ajouter un état pour les abonnés
+// console.log("current user:", currentUser);
+// console.log("profile_user:",user);
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
@@ -91,6 +95,93 @@ function ProfilePage() {
     }
   }, [userId, activeTab]);
 
+  useEffect(() => {
+    const fetchUserComments = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5000/api/comments/user/${userId}`, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+        setComments(response.data);
+      } catch (error) {
+        console.error('Erreur lors de la récupération des commentaires de l\'utilisateur:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (userId && activeTab === 'replies') {
+      fetchUserComments();
+    }
+  }, [userId, activeTab]);
+
+  useEffect(() => {
+    const fetchFollows = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5000/api/follows/follows/${userId}`, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+        setFollows(response.data);
+      } catch (error) {
+        console.error('Erreur lors de la récupération des abonnements:', error);
+      }
+    };
+
+    const fetchFollowers = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5000/api/follows/followers/${userId}`, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+        setFollowers(response.data);
+      } catch (error) {
+        console.error('Erreur lors de la récupération des abonnés:', error);
+      }
+    };
+
+    fetchFollows();
+    fetchFollowers();
+  }, [userId]);
+
+  const handleFollow = async () => {
+    try {
+      const response = await axios.post(`http://localhost:5000/api/follows`, {
+        followingId: userId
+      }, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+      setFollowers([...followers, response.data]); // Add the new follow to the follows state
+    } catch (error) {
+      console.error('Erreur lors du suivi de l\'utilisateur:', error);
+    }
+  };
+  console.log(currentUser)
+  console.log(user)
+  console.log("following" ,follows)
+  console.log("followers", followers)
+
+  const handleUnfollow = async () => {
+    try {
+      const follow = followers.find(follower => follower.followerId === currentUser.id);
+      if (follow) {
+        await axios.delete(`http://localhost:5000/api/follows/${follow.id}`, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+        setFollowers(followers.filter(follower => follower.followerId !== currentUser.id)); // Remove the follow from the follows state
+      }
+    } catch (error) {
+      console.error('Erreur lors du désabonnement de l\'utilisateur:', error);
+    }
+  };
+
   const handleUpdateTweet = (updatedTweet) => {
     setTweets((prevTweets) =>
       prevTweets.map((tweet) => (tweet.id === updatedTweet.id ? updatedTweet : tweet))
@@ -138,19 +229,25 @@ function ProfilePage() {
           <span className="text-gray-500 dark:text-gray-400"> Tweets</span>
         </div>
         <div>
-          <span className="text-gray-900 dark:text-white font-bold">456</span>
+          <span className="text-gray-900 dark:text-white font-bold">{followers.length}</span>
           <span className="text-gray-500 dark:text-gray-400"> Followers</span>
         </div>
         <div>
-          <span className="text-gray-900 dark:text-white font-bold">789</span>
+          <span className="text-gray-900 dark:text-white font-bold">{follows.length}</span>
           <span className="text-gray-500 dark:text-gray-400"> Following</span>
         </div>
       </div>
       <div className="flex space-x-4 mb-4">
         {currentUser.id !== user.id && (
-          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-            Follow
-          </button>
+          followers.some(follower => follower.followerId === currentUser.id) ? (
+            <button onClick={handleUnfollow} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+              Unfollow
+            </button>
+          ) : (
+            <button onClick={handleFollow} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+              Follow
+            </button>
+          )
         )}
         {currentUser.id !== user.id && (
           <button className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
@@ -172,22 +269,60 @@ function ProfilePage() {
           <>
             <h3 className="text-xl font-bold text-gray-900 dark:text-white mt-4">Posts</h3>
             {tweets.map((tweet) => (
-              <TweetCard 
-                key={tweet.id} 
-                tweet={tweet} 
-                isRetweet={tweet.isRetweet} 
-                retweeter={tweet.retweeter} 
-                onUpdate={handleUpdateTweet} 
-                onDelete={handleDeleteTweet} 
-              />
+              tweet && (
+                <TweetCard 
+                  key={tweet.id} 
+                  tweet={tweet} 
+                  isRetweet={tweet.isRetweet} 
+                  retweeter={tweet.retweeter} 
+                  onUpdate={handleUpdateTweet} 
+                  onDelete={handleDeleteTweet} 
+                />
+              )
             ))}
           </>
         )}
         {activeTab === 'replies' && (
           <>
             <h3 className="text-xl font-bold text-gray-900 dark:text-white mt-4">Replies</h3>
-            {/* Ajouter le code pour afficher les réponses */}
-            <p className="text-gray-500 dark:text-gray-400">No replies yet.</p>
+            {comments.length > 0 ? (
+              comments.map((comment) => (
+                comment && comment.User && comment.Tweet && (
+                  <div key={comment.id} className="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg shadow mb-4 border border-gray-400 dark:border-gray-1000">
+                    <div className="flex items-center space-x-4">
+                      <img
+                        src={comment.User.profile_picture.startsWith('/uploads/')
+                          ? `${BASE_URL}${comment.User.profile_picture}`
+                          : comment.User.profile_picture}
+                        alt="Profile"
+                        className="h-10 w-10 rounded-full"
+                      />
+                      <div>
+                        <div className="text-gray-900 dark:text-white font-bold">
+                          <Link to={`/profile/${comment.User.id}`}>{comment.User.username}</Link>
+                          <VerifiedBadge />
+                        </div>
+                        <div className="text-gray-500 dark:text-gray-300">@{comment.User.username}</div>
+                        {comment.parentCommentId === null ? (
+                          <div className="text-gray-500 dark:text-gray-400 text-sm mt-1 mb-3">
+                            En réponse à <Link to={`/profile/${comment.Tweet.User.id}`} className="text-blue-500">@{comment.Tweet.User.username}</Link>
+                          </div>
+                        ) : (
+                          comment.ParentComment && comment.ParentComment.User && (
+                            <div className="text-gray-500 dark:text-gray-400 text-sm mt-1 mb-3">
+                              En réponse à <Link to={`/profile/${comment.ParentComment.User.id}`} className="text-blue-500">@{comment.ParentComment.User.username}</Link>
+                            </div>
+                          )
+                        )}
+                        <p className="text-gray-700 dark:text-gray-300">{comment.content}</p>
+                      </div>
+                    </div>
+                  </div>
+                )
+              ))
+            ) : (
+              <p className="text-gray-500 dark:text-gray-400">No replies yet.</p>
+            )}
           </>
         )}
         {activeTab === 'media' && (
@@ -202,14 +337,16 @@ function ProfilePage() {
             <h3 className="text-xl font-bold text-gray-900 dark:text-white mt-4">Likes</h3>
             {likedTweets.length > 0 ? (
               likedTweets.map((tweet) => (
-                <TweetCard 
-                  key={tweet.id} 
-                  tweet={tweet} 
-                  isRetweet={tweet.isRetweet} 
-                  retweeter={tweet.retweeter} 
-                  onUpdate={handleUpdateTweet} 
-                  onDelete={handleDeleteTweet} 
-                />
+                tweet && (
+                  <TweetCard 
+                    key={tweet.id} 
+                    tweet={tweet} 
+                    isRetweet={tweet.isRetweet} 
+                    retweeter={tweet.retweeter} 
+                    onUpdate={handleUpdateTweet} 
+                    onDelete={handleDeleteTweet} 
+                  />
+                )
               ))
             ) : (
               <p className="text-gray-500 dark:text-gray-400">No likes yet.</p>

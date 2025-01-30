@@ -12,4 +12,6 @@ router.delete('/:id', authenticate, commentController.deleteComment);
 router.post('/reply', authenticate, commentController.replyToComment);
 router.get('/replies/:commentId', commentController.getRepliesByComment);
 
+router.get('/user/:userId', commentController.getCommentsByUser);
+
 module.exports = router;

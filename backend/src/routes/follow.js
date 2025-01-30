@@ -6,7 +6,7 @@ const { authenticate } = require('../middleware/auth');
 
 router.post('/', authenticate, followController.createFollow);
 router.delete('/:id', authenticate, followController.deleteFollow);
-router.get('/follows', authenticate, followController.getFollows);
-router.get('/followers', authenticate, followController.getFollowers);
+router.get('/follows/:userId', authenticate, followController.getFollows);
+router.get('/followers/:userId', authenticate, followController.getFollowers);
 
 module.exports = router;

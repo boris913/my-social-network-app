@@ -12,9 +12,17 @@ module.exports = (sequelize, DataTypes) => {
     },
     tweetId: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
       references: {
         model: 'Tweets',
+        key: 'id'
+      }
+    },
+    commentId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'Comments',
         key: 'id'
       }
     },
@@ -29,6 +37,7 @@ module.exports = (sequelize, DataTypes) => {
   Retweet.associate = function(models) {
     Retweet.belongsTo(models.User, { foreignKey: 'userId' });
     Retweet.belongsTo(models.Tweet, { foreignKey: 'tweetId' });
+    Retweet.belongsTo(models.Comment, { foreignKey: 'commentId' });
   };
 
   return Retweet;
